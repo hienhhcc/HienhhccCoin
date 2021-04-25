@@ -1,4 +1,6 @@
 # Hướng dẫn chạy chương trình
+- Tạo các file .env giống như .env trong các thư mục backend, frontend
+- Cài đặt docker => docker-compose up -d --build
 
 # Author
 

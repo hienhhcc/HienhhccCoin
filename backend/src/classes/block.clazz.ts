@@ -3,13 +3,13 @@ import { GENESIS_DATA } from '../config/config';
 
 class Block {
   constructor(
-    private timestamp: number,
-    private previousHash: string,
-    private hash: string,
-    private data: any
+    public timestamp: number,
+    public previousHash: string,
+    public hash: string,
+    public data: any
   ) {}
 
-  static getGenesisBlock() {
+  static getGenesisBlock(): Block {
     return new this(
       GENESIS_DATA.timestamp,
       GENESIS_DATA.previousHash,
@@ -18,7 +18,7 @@ class Block {
     );
   }
 
-  static mineBlock(previousBlock: Block, data: any) {
+  static mineBlock(previousBlock: Block, data: any): Block {
     const timestamp = Date.now();
     const previousHash = previousBlock.hash;
     console.log(calculateHash(timestamp, previousHash, data));
