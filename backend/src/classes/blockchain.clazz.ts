@@ -18,14 +18,23 @@ class BlockChain {
 
     // Duyệt qua tất cả các block của chain
     for (let i = 1; i < chain.length; i++) {
-      const { timestamp, previousHash, hash, data } = chain[i];
+      const { timestamp, previousHash, hash, data, difficulty, nonce } = chain[
+        i
+      ];
       const previousBlock = chain[i - 1];
+      const previousDifficulty = previousBlock.difficulty;
       // Nếu hash của previousBlock không giống previousHash của block sau
       if (previousBlock.hash !== previousHash) {
         return false;
       }
       // Tính toán lại hash của block
-      if (calculateHash(timestamp, previousHash, data) !== hash) {
+      if (
+        calculateHash(timestamp, previousHash, data, difficulty, nonce) !== hash
+      ) {
+        return false;
+      }
+
+      if (previousDifficulty - difficulty > 1) {
         return false;
       }
     }
