@@ -1,8 +1,8 @@
-import calculateHash from 'src/helpers/calculate-hash.helper';
+import calculateHash from '../helpers/calculate-hash.helper';
 import Block from './block.clazz';
 
 class BlockChain {
-  constructor(private chain = [Block.getGenesisBlock()]) {}
+  constructor(public chain = [Block.getGenesisBlock()]) {}
 
   addBlock(data: any) {
     const newBlock = Block.mineBlock(this.chain[this.chain.length - 1], data);
