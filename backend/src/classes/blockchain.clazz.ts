@@ -1,4 +1,4 @@
-import calculateHash from '../helpers/calculate-hash.helper';
+import { calculateHash } from '../helpers/calculate-hash.helper';
 import Block from './block.clazz';
 
 class BlockChain {

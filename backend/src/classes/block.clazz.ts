@@ -1,4 +1,4 @@
-import calculateHash from '../helpers/calculate-hash.helper';
+import { calculateHash } from '../helpers/calculate-hash.helper';
 import { GENESIS_DATA, MINE_RATE } from '../config/config';
 import hexToBinary from 'hex-to-binary';
 
