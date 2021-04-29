@@ -1,5 +1,6 @@
+import { MINING_REWARD, REWARD_INPUT } from 'src/config/config';
 import { calculateHash } from '../helpers/calculate-hash.helper';
-import { Block } from './index';
+import { Block, Transaction, Wallet } from './index';
 
 export class BlockChain {
   constructor(public chain = [Block.getGenesisBlock()]) {}
@@ -8,6 +9,51 @@ export class BlockChain {
     const newBlock = Block.mineBlock(this.chain[this.chain.length - 1], data);
 
     this.chain.push(newBlock);
+  }
+
+  validateTransactionData(chain: Block[]) {
+    for (let i = 1; i < chain.length; i++) {
+      const block = chain[i];
+      const transactionSet = new Set();
+      let rewardTransactionCount = 0;
+      for (let transaction of block.data) {
+        if (transaction.input.address === REWARD_INPUT.address) {
+          rewardTransactionCount++;
+          if (rewardTransactionCount > 1) {
+            console.error('Miner rewards exceed limit');
+            return false;
+          }
+          if (Object.values(transaction.outputMap)[0] !== MINING_REWARD) {
+            console.error('Miner reward is invalid');
+            return false;
+          }
+        } else {
+          if (!Transaction.validateTransaction(transaction)) {
+            console.error('Invalid transaction');
+            return false;
+          }
+
+          const trueBalance = Wallet.calculateBalance(
+            this.chain,
+            transaction.input.address
+          );
+
+          if (transaction.input.amount !== trueBalance) {
+            console.error('Invalid input amount');
+            return false;
+          }
+
+          if (transactionSet.has(transaction)) {
+            console.error(
+              'An identical transaction appears more than once in a block'
+            );
+            return false;
+          } else {
+            transactionSet.add(transaction);
+          }
+        }
+      }
+    }
   }
 
   static isValidChain(chain: Block[]): boolean {
@@ -41,8 +87,14 @@ export class BlockChain {
     return true;
   }
 
-  replaceChain(chain: Block[]) {
-    if (BlockChain.isValidChain(chain) && chain.length > this.chain.length) {
+  replaceChain(chain: Block[], validateTransactions, onSuccess) {
+    if (
+      BlockChain.isValidChain(chain) &&
+      chain.length > this.chain.length &&
+      validateTransactions &&
+      !this.validateTransactionData(chain)
+    ) {
+      if (onSuccess) onSuccess();
       this.chain = chain;
     }
   }

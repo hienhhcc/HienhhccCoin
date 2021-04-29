@@ -4,3 +4,4 @@ export { PubSub } from './pubsub.clazz';
 export { TransactionPool } from './transaction-pool.clazz';
 export { Transaction } from './transaction.clazz';
 export { Wallet } from './wallet.clazz';
+export { TransactionMiner } from './transaction-miner.clazz';

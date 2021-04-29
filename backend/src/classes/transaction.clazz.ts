@@ -1,15 +1,17 @@
 import { verifySignature } from '../helpers';
 import uuid from 'uuid/v1';
 import { Wallet } from './wallet.clazz';
+import { MINING_REWARD, REWARD_INPUT } from 'src/config/config';
 
 export class Transaction {
   public id: string;
   public outputMap;
   public input;
-  constructor(public senderWallet, public recipient, public amount) {
+  constructor(senderWallet, recipient, amount, outputMap, input) {
     this.id = uuid();
-    this.outputMap = this.createOutputMap(senderWallet, recipient, amount);
-    this.input = this.createInput(senderWallet, this.outputMap);
+    this.outputMap =
+      outputMap || this.createOutputMap(senderWallet, recipient, amount);
+    this.input = input || this.createInput(senderWallet, this.outputMap);
   }
 
   createOutputMap(senderWallet: Wallet, recipient: string, amount: number) {
@@ -69,5 +71,15 @@ export class Transaction {
     this.outputMap[recipient] = amount;
     this.outputMap[senderWallet.publicKey] -= amount;
     this.input = this.createInput(senderWallet, this.outputMap);
+  }
+
+  static rewardTransaction(minerWallet: Wallet) {
+    return new this(
+      null,
+      null,
+      null,
+      { [minerWallet.publicKey]: MINING_REWARD },
+      REWARD_INPUT
+    );
   }
 }

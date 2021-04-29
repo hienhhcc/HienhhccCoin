@@ -9,6 +9,7 @@ import {
   Wallet,
   TransactionPool,
   Transaction,
+  TransactionMiner,
 } from './classes';
 
 const app = express();
@@ -16,6 +17,12 @@ const blockchain = new BlockChain();
 const transactionPool = new TransactionPool();
 const wallet = new Wallet();
 const pubsub = new PubSub(blockchain, transactionPool);
+const transactionMiner = new TransactionMiner(
+  blockchain,
+  transactionPool,
+  wallet,
+  pubsub
+);
 
 dotenv.config();
 
@@ -50,7 +57,11 @@ app.post('/transact', (req: Request, res: Response) => {
     if (transaction) {
       transaction.update(wallet, recipient, amount);
     } else {
-      transaction = wallet.createTransaction(recipient, amount);
+      transaction = wallet.createTransaction(
+        recipient,
+        amount,
+        blockchain.chain
+      );
     }
   } catch (error) {
     return res.status(400).json({ type: 'error', message: error.message });
@@ -63,15 +74,29 @@ app.post('/transact', (req: Request, res: Response) => {
   res.json({ transaction });
 });
 
-app.post('/transaction-pool-map', (req, res) => {
+app.get('/transaction-pool-map', (req, res) => {
   res.json(transactionPool.transactionMap);
+});
+
+app.get('/mine-transactions', (req, res) => {
+  transactionMiner.mineTransactions();
+
+  res.redirect('/blocks');
+});
+
+app.get('/wallet-info', (req, res) => {
+  const address = wallet.publicKey;
+  res.json({
+    address,
+    balance: Wallet.calculateBalance(blockchain.chain, address),
+  });
 });
 
 const syncWithRootNode = () => {
   request({ url: `${ROOT_NODE_ADDRESS}/blocks` }, (error, response, body) => {
     if (!error && response.statusCode === 200) {
       const rootChain = JSON.parse(body);
-      blockchain.replaceChain(rootChain);
+      blockchain.replaceChain(rootChain, true, () => {});
     }
   });
 

@@ -3,6 +3,10 @@ export const MINE_RATE = 1000;
 
 export const INITIAL_BALANCE = 1000;
 
+export const REWARD_INPUT = { address: '*authorized-reward*' };
+
+export const MINING_REWARD = 50;
+
 export const GENESIS_DATA = {
   timestamp: Date.now(),
   previousHash: '-----',
