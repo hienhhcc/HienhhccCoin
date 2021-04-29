@@ -2,7 +2,7 @@ import { calculateHash } from '../helpers/calculate-hash.helper';
 import { GENESIS_DATA, MINE_RATE } from '../config/config';
 import hexToBinary from 'hex-to-binary';
 
-class Block {
+export class Block {
   constructor(
     public timestamp: number,
     public previousHash: string,
@@ -61,4 +61,3 @@ class Block {
   }
 }
 
-export default Block;

@@ -1,8 +1,8 @@
 import { verifySignature } from '../helpers';
 import uuid from 'uuid/v1';
-import Wallet from './wallet.clazz';
+import { Wallet } from './wallet.clazz';
 
-class Transaction {
+export class Transaction {
   public id: string;
   public outputMap;
   public input;
@@ -71,5 +71,3 @@ class Transaction {
     this.input = this.createInput(senderWallet, this.outputMap);
   }
 }
-
-export default Transaction;

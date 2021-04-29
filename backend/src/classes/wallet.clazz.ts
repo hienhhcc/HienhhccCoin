@@ -1,9 +1,9 @@
 import { INITIAL_BALANCE } from '../config/config';
 import { ec } from '../helpers';
 import { calculateHash } from '../helpers/calculate-hash.helper';
-import Transaction from './transaction.clazz';
+import { Transaction } from './transaction.clazz';
 
-class Wallet {
+export class Wallet {
   constructor(
     public balance: number = INITIAL_BALANCE,
     public keyPair = ec.genKeyPair(),
@@ -24,5 +24,3 @@ class Wallet {
     return new Transaction(this, recipient, amount);
   }
 }
-
-export default Wallet;

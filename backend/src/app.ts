@@ -1,14 +1,21 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import request, { RequestCallback } from 'request';
+import request from 'request';
 import dotenv from 'dotenv';
-import BlockChain from './classes/blockchain.clazz';
-import PubSub from './classes/pubsub.clazz';
+import {
+  BlockChain,
+  PubSub,
+  Wallet,
+  TransactionPool,
+  Transaction,
+} from './classes';
 
 const app = express();
 const blockchain = new BlockChain();
-const pubsub = new PubSub(blockchain);
+const transactionPool = new TransactionPool();
+const wallet = new Wallet();
+const pubsub = new PubSub(blockchain, transactionPool);
 
 dotenv.config();
 
@@ -34,13 +41,54 @@ app.post('/mine-block', (req: Request, res: Response) => {
   res.redirect('/blocks');
 });
 
-const syncChains = () => {
+app.post('/transact', (req: Request, res: Response) => {
+  const { amount, recipient } = req.body;
+  let transaction: Transaction = transactionPool.existingTransaction(
+    wallet.publicKey
+  );
+  try {
+    if (transaction) {
+      transaction.update(wallet, recipient, amount);
+    } else {
+      transaction = wallet.createTransaction(recipient, amount);
+    }
+  } catch (error) {
+    return res.status(400).json({ type: 'error', message: error.message });
+  }
+
+  transactionPool.setTransaction(transaction);
+  pubsub.broadcastTransaction(transaction);
+
+  console.log('TransactionPool', transactionPool);
+  res.json({ transaction });
+});
+
+app.post('/transaction-pool-map', (req, res) => {
+  res.json(transactionPool.transactionMap);
+});
+
+const syncWithRootNode = () => {
   request({ url: `${ROOT_NODE_ADDRESS}/blocks` }, (error, response, body) => {
     if (!error && response.statusCode === 200) {
       const rootChain = JSON.parse(body);
       blockchain.replaceChain(rootChain);
     }
   });
+
+  request(
+    { url: `${ROOT_NODE_ADDRESS}/transaction-pool-map` },
+    (error, response, body) => {
+      if (!error && response.statusCode === 200) {
+        const rootTransactionPoolMap = JSON.parse(body);
+
+        console.log(
+          'replace transation pool map on a sync with',
+          rootTransactionPoolMap
+        );
+        transactionPool.setMap(rootTransactionPoolMap);
+      }
+    }
+  );
 };
 
 let PEER_PORT;
@@ -54,6 +102,6 @@ const PORT = PEER_PORT || DEFAULT_PORT;
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
   if (PORT !== DEFAULT_PORT) {
-    syncChains();
+    syncWithRootNode();
   }
 });

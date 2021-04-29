@@ -1,7 +1,7 @@
 import { calculateHash } from '../helpers/calculate-hash.helper';
-import Block from './block.clazz';
+import { Block } from './index';
 
-class BlockChain {
+export class BlockChain {
   constructor(public chain = [Block.getGenesisBlock()]) {}
 
   addBlock(data: any) {
@@ -47,5 +47,3 @@ class BlockChain {
     }
   }
 }
-
-export default BlockChain;
