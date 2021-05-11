@@ -26,6 +26,7 @@ const transactionMiner = new TransactionMiner(
 
 dotenv.config();
 
+console.log(process.env.REDIS_URL);
 const DEFAULT_PORT = parseInt(process.env.PORT);
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 

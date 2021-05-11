@@ -14,8 +14,8 @@ export class PubSub {
     public blockchain: BlockChain,
     public transactionPool: TransactionPool
   ) {
-    this.publisher = redis.createClient();
-    this.subscriber = redis.createClient();
+    this.publisher = redis.createClient({ url: process.env.REDIS_URL });
+    this.subscriber = redis.createClient({ url: process.env.REDIS_URL });
 
     this.subscribeToChannels();
     this.subscriber.on('message', (channel, message) =>

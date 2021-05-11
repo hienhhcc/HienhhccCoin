@@ -9,7 +9,11 @@ import useSWR from 'swr';
 import './Home.css';
 
 const Home: React.FC = () => {
-  const { data, error } = useSWR('http://localhost:8001/wallet-info');
+  console.log(process.env.BACKEND_URL);
+  console.log(process.env.REACT_APP_BACKEND_URL);
+  const { data, error } = useSWR(
+    `http://host.docker.internal:8001/wallet-info`
+  );
 
   console.log(data);
 
