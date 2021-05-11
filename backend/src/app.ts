@@ -36,7 +36,7 @@ app.options('*', cors());
 app.get('/', (req, res) => res.send('Express + TypeScript Server'));
 
 app.get('/blocks', (req: Request, res: Response) => {
-  res.json(blockchain.chain);
+  res.json({ blocks: blockchain.chain });
 });
 
 app.post('/mine-block', (req: Request, res: Response) => {
@@ -71,11 +71,11 @@ app.post('/transact', (req: Request, res: Response) => {
   pubsub.broadcastTransaction(transaction);
 
   console.log('TransactionPool', transactionPool);
-  res.json({ transaction });
+  res.json({ transaction: transaction, type: 'success' });
 });
 
 app.get('/transaction-pool-map', (req, res) => {
-  res.json(transactionPool.transactionMap);
+  res.json({ transactionPoolMap: transactionPool.transactionMap });
 });
 
 app.get('/mine-transactions', (req, res) => {
@@ -115,6 +115,55 @@ const syncWithRootNode = () => {
     }
   );
 };
+
+const walletFoo = new Wallet();
+const walletBar = new Wallet();
+
+const generateWalletTransaction = ({ wallet: Wallet, recipient, amount }) => {
+  const transaction = wallet.createTransaction(
+    recipient,
+    amount,
+    blockchain.chain
+  );
+
+  transactionPool.setTransaction(transaction);
+};
+
+const walletAction = () =>
+  generateWalletTransaction({
+    wallet,
+    recipient: walletFoo.publicKey,
+    amount: 5,
+  });
+
+const walletFooAction = () =>
+  generateWalletTransaction({
+    wallet: walletFoo,
+    recipient: walletBar.publicKey,
+    amount: 10,
+  });
+
+const walletBarAction = () =>
+  generateWalletTransaction({
+    wallet: walletBar,
+    recipient: walletBar.publicKey,
+    amount: 15,
+  });
+
+for (let i = 0; i < 10; i++) {
+  if (i % 3 === 0) {
+    walletAction();
+    walletFooAction();
+  } else if (i % 3 === 1) {
+    walletAction();
+    walletBarAction();
+  } else {
+    walletFooAction();
+    walletBarAction();
+  }
+
+  transactionMiner.mineTransactions();
+}
 
 let PEER_PORT;
 console.log(process.env.GENERATE_PEER_PORT);

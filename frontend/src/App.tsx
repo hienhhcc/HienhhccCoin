@@ -6,18 +6,22 @@ import MainHeader from './components/MainHeader/MainHeader';
 import { LoadingOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import Home from './pages/Home';
-import CreateNewWallet from './pages/CreateNewWallet';
-import AccessMyWallet from './pages/AccessMyWallet';
+import ConductTransaction from './pages/ConductTransaction';
+import ListTransactions from './pages/ListTransactions';
+import TransactionPool from './pages/TransactionPool';
 
 function App() {
   let routes = (
     <Switch>
       <Route path="/" exact component={Home} />
-      <Route path="/create-new-wallet" exact>
-        <CreateNewWallet />
+      <Route path="/conduct-transaction" exact>
+        <ConductTransaction />
       </Route>
-      <Route path="/access-my-wallet" exact>
-        <AccessMyWallet />
+      <Route path="/list-transaction" exact>
+        <ListTransactions />
+      </Route>
+      <Route path="/transaction-pool" exact>
+        <TransactionPool />
       </Route>
       {/* <Redirect to="/" /> */}
     </Switch>

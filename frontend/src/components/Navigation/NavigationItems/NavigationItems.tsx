@@ -26,6 +26,11 @@ const NavigationItems: React.FC<Props> = ({ isAuthenticated }) => {
           View transactions
         </Button>
       </Link>
+      <Link to="/transaction-pool">
+        <Button type="primary" ghost>
+          Transaction pool
+        </Button>
+      </Link>
     </>
   );
 
