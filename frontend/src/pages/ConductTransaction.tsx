@@ -17,7 +17,7 @@ const ConductTransaction: React.FC = () => {
   };
 
   const conductTransaction = () => {
-    fetch('http://localhost:8001/transact', {
+    fetch('http://host.docker.internal:8001/transact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ recipient, amount }),

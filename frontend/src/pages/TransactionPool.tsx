@@ -6,7 +6,7 @@ import './TransactionPool.css';
 
 const TransactionPool: React.FC = () => {
   const [transactionPoolMap, setTransactionPoolMap] = useState({});
-  const { data, error } = useSWR('http://localhost:8001/transaction-pool-map');
+  const { data, error } = useSWR('http://host.docker.internal:8001/transaction-pool-map');
   useEffect(() => {
     if (data) {
       setTransactionPoolMap(data.transactionPoolMap);
