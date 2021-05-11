@@ -1,0 +1,24 @@
+.navigation-items {
+    margin: 0;
+    margin-left: auto !important;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+a.menu-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
+
+
+@media only screen and (max-width: 500px) {
+   .user-profile{
+       display: none !important;
+   }
+}

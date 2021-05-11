@@ -1,7 +1,7 @@
 import { verifySignature } from '../helpers';
 import uuid from 'uuid/v1';
 import { Wallet } from './wallet.clazz';
-import { MINING_REWARD, REWARD_INPUT } from 'src/config/config';
+import { MINING_REWARD, REWARD_INPUT } from '../config/config';
 
 export class Transaction {
   public id: string;

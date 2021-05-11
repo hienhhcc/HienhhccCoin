@@ -1,4 +1,4 @@
-import { MINING_REWARD, REWARD_INPUT } from 'src/config/config';
+import { MINING_REWARD, REWARD_INPUT } from '../config/config';
 import { calculateHash } from '../helpers/calculate-hash.helper';
 import { Block, Transaction, Wallet } from './index';
 
@@ -64,9 +64,8 @@ export class BlockChain {
 
     // Duyệt qua tất cả các block của chain
     for (let i = 1; i < chain.length; i++) {
-      const { timestamp, previousHash, hash, data, difficulty, nonce } = chain[
-        i
-      ];
+      const { timestamp, previousHash, hash, data, difficulty, nonce } =
+        chain[i];
       const previousBlock = chain[i - 1];
       const previousDifficulty = previousBlock.difficulty;
       // Nếu hash của previousBlock không giống previousHash của block sau
@@ -80,7 +79,7 @@ export class BlockChain {
         return false;
       }
 
-      if (previousDifficulty - difficulty > 1) {
+      if (Math.abs(previousDifficulty - difficulty) > 1) {
         return false;
       }
     }
