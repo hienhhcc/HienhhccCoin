@@ -5,7 +5,7 @@ import { IBlock } from './Block.interface';
 import './Blocks.css';
 
 const Blocks: React.FC = () => {
-  const { data, error } = useSWR('backend' + '/blocks');
+  const { data, error } = useSWR('http://host.docker.internal:8001/blocks');
   const [blocks, setBlocks] = useState<IBlock[]>([]);
   console.log(data);
 
