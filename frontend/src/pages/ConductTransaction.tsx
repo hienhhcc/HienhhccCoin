@@ -1,11 +1,12 @@
 import './ConductTransaction.css';
 import { FormGroup, FormControl, Button } from 'react-bootstrap';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const ConductTransaction: React.FC = () => {
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState(0);
+  const history = useHistory();
 
   const updateRecipient = (event: any) => {
     setRecipient(event.target.value);
@@ -24,6 +25,7 @@ const ConductTransaction: React.FC = () => {
       .then((response) => response.json())
       .then((json) => {
         alert(json.message || json.type);
+        history.push('/transaction-pool');
       });
   };
 
